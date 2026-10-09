@@ -95,3 +95,40 @@ matrix_dbl lsmash_from_file(const std::string& seqfile, const LsmashOptions& opt
 
     return D;
 }
+
+
+// Native original distance kernel, with supplied PFSA projectors rather
+// than the four randomly generated projectors used when G is empty.
+// PFSA files use the zbase "$" morph and "@" transition text format;
+// conversion of GenESeSS output to that format happens outside this API.
+matrix_dbl lsmash_from_sequences_with_pfsas(
+    std::vector<symbol_list_>& seqs,
+    const std::vector<std::string>& pfsa_files,
+    const LsmashOptions& opt) {
+
+    normalize_data_type(opt.data_type);
+    normalize_data_dir(opt.data_dir);
+    if (seqs.empty()) {
+        throw std::invalid_argument("seqs must not be empty");
+    }
+    if (pfsa_files.empty()) {
+        throw std::invalid_argument("Must supply >=1 learned PFSA");
+    }
+    std::vector<PFSA> models;
+    models.reserve(pfsa_files.size());
+    for (const auto& file : pfsa_files) {
+        PFSA model(file);
+        if (model.empty() || model.get_pit().empty()) {
+            throw std::runtime_error("Invalid learned PFSA in " + file);
+        }
+        models.push_back(model);
+    }
+
+    // The SAME original LSmash native projector distance as
+    // lsmash_from_sequences, with nonempty custom projection family.
+    matrix_dbl D = llk_distance(seqs, models);
+    if (opt.sae) {
+        apply_sae_diagonal(D, seqs, opt.num_repeat, opt.depth);
+    }
+    return D;
+}
