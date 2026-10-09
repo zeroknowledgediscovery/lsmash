@@ -132,6 +132,23 @@ PYBIND11_MODULE(_lsmash, m) {
     );
 
     m.def(
+        "from_sequences_with_pfsas",
+        [](const std::vector<std::vector<unsigned int>>& seqs,
+           const std::vector<std::string>& pfsa_files,
+           const LsmashOptions& opt) {
+            std::vector<symbol_list_> native = to_symbol_lists(seqs);
+            py::gil_scoped_release release;
+            matrix_dbl D = lsmash_from_sequences_with_pfsas(native, pfsa_files, opt);
+            py::gil_scoped_acquire acquire;
+            return matrix_dbl_to_numpy(D);
+        },
+        py::arg("seqs"),
+        py::arg("pfsa_files"),
+        py::arg("options") = LsmashOptions{},
+        "Original LSmash native llk_distance using externally learned PFSA projection models."
+    );
+
+    m.def(
         "from_sequences_sparse",
         [](const std::vector<std::vector<unsigned int>>& seqs, const LsmashOptions& opt) {
             std::vector<symbol_list_> native = to_symbol_lists(seqs);
