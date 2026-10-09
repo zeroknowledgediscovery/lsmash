@@ -4,6 +4,7 @@ from ._lsmash import (
     from_file_sparse,
     from_sequences,
     from_sequences_sparse,
+    from_sequences_with_pfsas,
 )
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     "from_file_sparse",
     "from_sequences",
     "from_sequences_sparse",
+    "from_sequences_with_pfsas",
 ]
