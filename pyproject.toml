@@ -7,7 +7,7 @@ name = "lsmash"
 version = "0.1.0"
 description = "Python bindings for lsmash"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 authors = [
   { name = "Ishanu Chattopadhyay" }
 ]
