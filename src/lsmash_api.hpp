@@ -17,3 +17,10 @@ struct LsmashOptions {
 
 matrix_dbl lsmash_from_file(const std::string& seqfile, const LsmashOptions& opt);
 matrix_dbl lsmash_from_sequences(std::vector<symbol_list_>& seqs, const LsmashOptions& opt);
+
+// Uses the original native llk_distance(sequences, learned_PFSAs) kernel;
+// only the PFSA projection family is supplied externally.
+matrix_dbl lsmash_from_sequences_with_pfsas(
+    std::vector<symbol_list_>& seqs,
+    const std::vector<std::string>& pfsa_files,
+    const LsmashOptions& opt);
